@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js example</title>
+  <script src="lib/p5.js"></script>
+  <script src="node_modules/ccapture.js/build/CCapture.all.min.js"></script>
+  <!-- <script src="../addons/p5.sound.js"></script> -->
+  <script src="lib/empty-example/Queue.js"></script>
+  <script src="lib/empty-example/spotifyHandler.js"></script>
+  <script src="node_modules/colorthief/dist/color-thief.umd.js"></script>
+  <script src="lib/empty-example/sketch.js"></script>
+  <script src="lib/empty-example/ColourManager.js"></script>
+  <script src="lib/empty-example/audioSetup.js"></script>
+  <script src="lib/empty-example/staticArt.js"></script>
+  <script src="lib/empty-example/drawVisualisers.js"></script>
+  <script src="lib/empty-example/juliaSetVisualiser.js"></script>
+
+
+  <link rel="stylesheet" href="lib/empty-example/reset.css">
+  <link rel="stylesheet" href="lib/empty-example/main.css">
+
+
+</head>
+
+<body>
+  <main>
+    <div class="Settings">
+      <H2>Global Settings:</H2>
+      <p>Screen Record Settings: Entire Screen, Share System Audio</p>
+      <button onclick="setupAudio()">
+        Capture Audio
+      </button>
+      <button onclick="toggleFullscreen()">Toggle Fullscreen
+      </button>
+      <label>Scale Sketch: (<span id="scale">1</span>)</label>
+      <input type="range" max="3" min="0.25" step="0.1" value="1" oninput="sizeSketch(this.value)">
+      <label>Frame delay: (<span id="delay">0</span>)</label>
+      <input type="range" max="500" min="0" step="1" value="0" oninput="addDelay(this.value)">
+      <select onchange="setColorScheme(this.selectedIndex)">
+        <option value="option1">Rainbow by index</option>
+        <option value="option2">Rainbow by amplitude</option>
+        <option value="option3">Album by amplitude</option>
+        <option value="option3">Album by index</option>
+      </select>
+    </div>
+    <br>
+    <div class="Settings">
+      <H2>Spiral Settings:</H2>
+      <label>Set Angular Velocity: (<span id="angVel">0</span>)</label>
+        <input type="range" max="4" min="-4" step="0.25" value="0" oninput="radialVisualiser.setAngularVelocity(this.value)">
+      <label>Set Spiral Speed: (<span id="spiralVel">0</span>)</label>
+        <input type="range" max="2" min="-2" step="0.1" value="0" oninput="radialVisualiser.setSpiralVelocity(this.value)">
+      <label>Set Radial Offset: (<span id="radiusOffset">70</span>)</label>
+        <input type="range" max="100" min="0" step="0.1" value="70" oninput="radialVisualiser.setRadiusOffset(this.value)">
+      <label>Rotate with Amplitude: </label></label>
+        <input type="checkbox" onchange="radialVisualiser.rotationDependsOnAmp = this.checked">
+    </div>
+    <br>
+    <br>
+    <div class="Settings">
+      <H2>Julia Settings:</H2>
+      <label>Set CA: (<span id="ca">0</span>)</label>
+      <input type="range" max="2" min="-2" step="0.1" value="0" oninput="JuliaSetVisualiser.setCa(this.value)">
+      <label>Set CB: (<span id="cb">0</span>)</label>
+      <input type="range" max="2" min="-2" step="0.1" value="0" oninput="JuliaSetVisualiser.setCb(this.value)">
+    </div>
+    <br>
+    <div id="CanvasParent"></div>
+    <div class="Spotify Player">
+      <p>*note: when spotify redirects back from the login, go into the address bar and hit enter again so the page properly loads</p>
+
+      <button onclick="SpotifyHandler.spotifySignIn()">
+        Link Spotify
+      </button>
+      <button onclick="SpotifyHandler.updateSong()">
+        Update Song
+      </button>
+      <p id="CurrentlyPlaying">Not playing anything</p>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <video controls></video>
+
+  </main>
+</body>
+
+</html>
