@@ -1,89 +1,93 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="">
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/10.6.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/10.6.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/10.6.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js example</title>
+  <script src="../lib/p5.js"></script>
+  <script src="../node_modules/ccapture.js/build/CCapture.all.min.js"></script>
+  <!-- <script src="../addons/p5.sound.js"></script> -->
+  <script src="../lib/empty-example/Queue.js"></script>
+  <script src="../lib/empty-example/spotifyHandler.js"></script>
+  <script src="../node_modules/colorthief/dist/color-thief.umd.js"></script>
+  <script src="../lib/empty-example/sketch.js"></script>
+  <script src="../lib/empty-example/ColourManager.js"></script>
+  <script src="../lib/empty-example/audioSetup.js"></script>
+  <script src="../lib/empty-example/staticArt.js"></script>
+  <script src="../lib/empty-example/drawVisualisers.js"></script>
+  <script src="../lib/empty-example/juliaSetVisualiser.js"></script>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+
+  <link rel="stylesheet" href="../lib/empty-example/reset.css">
+  <link rel="stylesheet" href="../lib/empty-example/main.css">
+
+
+</head>
+
+<body>
+  <main>
+    <div class="Settings">
+      <H2>Global Settings:</H2>
+      <p>Screen Record Settings: Entire Screen, Share System Audio</p>
+      <button onclick="setupAudio()">
+        Capture Audio
+      </button>
+      <button onclick="toggleFullscreen()">Toggle Fullscreen
+      </button>
+      <label>Scale Sketch: (<span id="scale">1</span>)</label>
+      <input type="range" max="3" min="0.25" step="0.1" value="1" oninput="sizeSketch(this.value)">
+      <label>Frame delay: (<span id="delay">0</span>)</label>
+      <input type="range" max="500" min="0" step="1" value="0" oninput="addDelay(this.value)">
+      <select onchange="setColorScheme(this.selectedIndex)">
+        <option value="option1">Rainbow by index</option>
+        <option value="option2">Rainbow by amplitude</option>
+        <option value="option3">Album by amplitude</option>
+        <option value="option3">Album by index</option>
+      </select>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+    <br>
+    <div class="Settings">
+      <H2>Spiral Settings:</H2>
+      <label>Set Angular Velocity: (<span id="angVel">0</span>)</label>
+        <input type="range" max="4" min="-4" step="0.25" value="0" oninput="radialVisualiser.setAngularVelocity(this.value)">
+      <label>Set Spiral Speed: (<span id="spiralVel">0</span>)</label>
+        <input type="range" max="2" min="-2" step="0.1" value="0" oninput="radialVisualiser.setSpiralVelocity(this.value)">
+      <label>Set Radial Offset: (<span id="radiusOffset">70</span>)</label>
+        <input type="range" max="100" min="0" step="0.1" value="70" oninput="radialVisualiser.setRadiusOffset(this.value)">
+      <label>Rotate with Amplitude: </label></label>
+        <input type="checkbox" onchange="radialVisualiser.rotationDependsOnAmp = this.checked">
+    </div>
+    <br>
+    <br>
+    <div class="Settings">
+      <H2>Julia Settings:</H2>
+      <label>Set CA: (<span id="ca">0</span>)</label>
+      <input type="range" max="2" min="-2" step="0.1" value="0" oninput="JuliaSetVisualiser.setCa(this.value)">
+      <label>Set CB: (<span id="cb">0</span>)</label>
+      <input type="range" max="2" min="-2" step="0.1" value="0" oninput="JuliaSetVisualiser.setCb(this.value)">
+    </div>
+    <br>
+    <div id="CanvasParent"></div>
+    <div class="Spotify Player">
+      <p>*note: when spotify redirects back from the login, go into the address bar and hit enter again so the page properly loads</p>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      <button onclick="SpotifyHandler.spotifySignIn()">
+        Link Spotify
+      </button>
+      <button onclick="SpotifyHandler.updateSong()">
+        Update Song
+      </button>
+      <p id="CurrentlyPlaying">Not playing anything</p>
+    </div>
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+    <br>
+    <br>
+    <br>
+
+    <video controls></video>
+
+  </main>
+</body>
+
 </html>
