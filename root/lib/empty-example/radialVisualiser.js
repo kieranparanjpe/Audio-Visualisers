@@ -184,9 +184,6 @@ class radialBar
         // text(dataArray[i].toFixed(0), 0, 400);
         frame.pop();
 
-        frame.fill(255);
-        frame.rect(0, 0, 500, 500);
-
     }
 
     show(i, dataArray)
