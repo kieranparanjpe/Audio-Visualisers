@@ -67,7 +67,6 @@ class ColourManager
 
         ColourManager.bgColor = bg;
         ColourManager.b2Color = b2;
-
         UpdateBackground();
 
         let pal = ColourManager.palette.filter((item, index, array) => {
@@ -77,8 +76,6 @@ class ColourManager
         {
             ColourManager.palette = pal;
         }
-
-
     }
 
     static rgbToHsv(c) {

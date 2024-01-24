@@ -4,10 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>p5.js example</title>
+  <title>music visualiser</title>
   <script src="lib/p5.js"></script>
   <script src="node_modules/ccapture.js/build/CCapture.all.min.js"></script>
-  <!-- <script src="../addons/p5.sound.js"></script> -->
   <script src="lib/empty-example/Queue.js"></script>
   <script src="lib/empty-example/spotifyHandler.js"></script>
   <script src="node_modules/colorthief/dist/color-thief.umd.js"></script>
@@ -15,7 +14,10 @@
   <script src="lib/empty-example/ColourManager.js"></script>
   <script src="lib/empty-example/audioSetup.js"></script>
   <script src="lib/empty-example/staticArt.js"></script>
-  <script src="lib/empty-example/drawVisualisers.js"></script>
+  <script src="lib/empty-example/radialVisualiser.js"></script>
+  <script src="lib/empty-example/ballVisualiser.js"></script>
+  <script src="lib/empty-example/HorizontalVisualiser.js"></script>
+
   <script src="lib/empty-example/juliaSetVisualiser.js"></script>
 
 
@@ -29,6 +31,7 @@
   <main>
     <div class="Settings">
       <H2>Global Settings:</H2>
+      <h3>Use in chrome or edge</h3>
       <p>Screen Record Settings: Entire Screen, Share System Audio</p>
       <button onclick="setupAudio()">
         Capture Audio
@@ -39,12 +42,14 @@
       <input type="range" max="3" min="0.25" step="0.1" value="1" oninput="sizeSketch(this.value)">
       <label>Frame delay: (<span id="delay">0</span>)</label>
       <input type="range" max="500" min="0" step="1" value="0" oninput="addDelay(this.value)">
-      <select onchange="setColorScheme(this.selectedIndex)">
+      <br>
+      <label>Colour Scheme: <select onchange="setColorScheme(this.selectedIndex)">
         <option value="option1">Rainbow by index</option>
         <option value="option2">Rainbow by amplitude</option>
-        <option value="option3">Album by amplitude</option>
-        <option value="option3">Album by index</option>
-      </select>
+        <option value="option3">Album by amplitude (requires spotify link)</option>
+        <option value="option3">Album by index (requires spotify link)</option>
+      </select></label>
+
     </div>
     <br>
     <div class="Settings">

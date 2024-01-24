@@ -1,4 +1,3 @@
-
 class radialVisualiser
 {
     static angularVelocity = Math.PI / 180;
@@ -47,9 +46,7 @@ class radialVisualiser
 
             if(dataArray[i] > max){
                 max = dataArray[i];
-
             }
-
            /* let barHeight = Math.pow((140 + dataArray[i]) / radialVisualiser.linearHeightCoefficient, radialVisualiser.heightPow);
             let barPercent = Math.pow((140 + dataArray[i])/radialVisualiser.linearAlphaCoefficient, radialVisualiser.exponentialAlphaCoefficient);
 
@@ -65,9 +62,6 @@ class radialVisualiser
             // text(dataArray[i].toFixed(0), 0, 400);*/
 
         }
-
-        //console.log(min + " to " + max);
-
     }
 
     show(){
@@ -77,12 +71,8 @@ class radialVisualiser
         const dataArray = new Float32Array(bufferLength);
         analyser.getFloatFrequencyData(dataArray);
 
-
-
-
         for (let i = 0; i < bufferLength; i++) {
             this.bars[i].show(i, dataArray);
-
             /* let barHeight = Math.pow((140 + dataArray[i]) / radialVisualiser.linearHeightCoefficient, radialVisualiser.heightPow);
              let barPercent = Math.pow((140 + dataArray[i])/radialVisualiser.linearAlphaCoefficient, radialVisualiser.exponentialAlphaCoefficient);
 
@@ -96,7 +86,6 @@ class radialVisualiser
              //canvasCtx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
              rect(-width / 2, this.radiusOffset * Math.sin(i / bufferLength * rot * this.spiral) - this.radiusOffset,width * 1.3, -barHeight)
              // text(dataArray[i].toFixed(0), 0, 400);*/
-
         }
 
     }
@@ -123,9 +112,6 @@ class radialVisualiser
         let bpm = SpotifyHandler.details.tempo;
         let timeSig = SpotifyHandler.details.time_signature;
         radialVisualiser.angularVelocity = ((0.5 * Math.PI / timeSig) / (60 / bpm)) * (deltaTime / 1000);
-
-        console.log(timeSig + " " + bpm);
-
         //radialVisualiser.rotation = 0;
     }
 }
@@ -147,10 +133,12 @@ class radialBar
     {
 
         frame.push();
-        let barHeight = Math.pow((170 + dataArray[i]) / radialVisualiser.linearHeightCoefficient, radialVisualiser.exponentialHeightCoefficient);
-        let barAlpha = Math.pow((170 + dataArray[i])/radialVisualiser.linearAlphaCoefficient, radialVisualiser.exponentialAlphaCoefficient);
+        let barHeight = Math.pow(((170 + dataArray[i])) * map(i, 0, HorizontalVisualiser.resolution/2, 1, 1.7) / radialVisualiser.linearHeightCoefficient, radialVisualiser.exponentialHeightCoefficient);
+        let barAlpha = Math.pow((170 + dataArray[i]) * map(i, 0, HorizontalVisualiser.resolution/2, 1, 1.8)/radialVisualiser.linearAlphaCoefficient, radialVisualiser.exponentialAlphaCoefficient);
         let amplitudePercent = Math.min(Math.max((1 / 140) * (170 + dataArray[i]), 0), 1); //0-1
         let sinAmplitude = 0.5 + -0.5 * Math.sin((2 * Math.PI / 140) * (136 + dataArray[i]));
+
+        //console.log(170 + dataArray[i]);
 
         switch(colorScheme)
         {
@@ -179,6 +167,8 @@ class radialBar
         frame.translate(canvas.width / 2 + this.cx, canvas.height / 2 - this.cy);//i * width
 
 
+
+
         let rotationAmp = radialVisualiser.rotationDependsOnAmp ? (0.8 + 0.4 * i / radialVisualiser.resolution / 2) : 1;
         let newRotMult =  false ? barPercent / 100 : 1; // false -> radialVisualiser.rotationDependsOnAmp
         this.rotation += radialVisualiser.angularVelocity * radialVisualiser.angularVelocityMultiplier * newRotMult;
@@ -193,6 +183,9 @@ class radialBar
             radialVisualiser.width * 1.3, -barHeight)
         // text(dataArray[i].toFixed(0), 0, 400);
         frame.pop();
+
+        frame.fill(255);
+        frame.rect(0, 0, 500, 500);
 
     }
 
@@ -226,85 +219,4 @@ class radialBar
     }
 
 
-}
-
-class ballVisualiser
-{
-    static resolution = 2048;
-
-    static balls = [];
-
-    static time = 0;
-
-    static initialise()
-    {
-        for (let i = 0; i < ballVisualiser.resolution /2 ; i++) {
-            ballVisualiser.balls.push(new ball(random(50, canvas.width - 50), random(50, canvas.height- 50)));
-
-        }
-    }
-
-    static show(frame){
-        ballVisualiser.time += 1/10;
-        analyser.fftSize = ballVisualiser.resolution;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Float32Array(bufferLength);
-        analyser.getFloatFrequencyData(dataArray);
-
-
-        for (let i = 0; i < bufferLength; i++) {
-            let magnitude = ((140 + dataArray[i]) / 140);
-            if(magnitude > 100 || magnitude < 0)
-                magnitude = 0;
-
-            let velMag = Math.pow(2 * magnitude, 3)
-
-            ballVisualiser.balls[i].updateVelocity(velMag, magnitude);
-            ballVisualiser.balls[i].show(frame);
-
-        }
-    }
-}
-
-class ball
-{
-    position = new p5.Vector();
-    velocity = new p5.Vector();
-
-    rotOffset = 0;
-    sz = 0;
-
-    constructor(x, y) {
-        this.position = createVector(x, y);
-        this.rotOffset = random(0, Math.PI);
-        this.sz = 10;
-    }
-
-    show(frame)
-    {
-        //console.log(this.position.x + " " + this.velocity.x);
-
-        this.position = createVector(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
-        push();
-        frame.noStroke();
-        frame.translate(this.position.x, this.position.y);
-        frame.fill(color(100 - this.sz*80, 100, 100, this.sz * 100));
-        frame.ellipse(0, 0, 37.2 * this.sz);
-
-        pop();
-    }
-
-    updateVelocity(x, y)
-    {
-        this.sz = Math.sqrt(y);
-        this.velocity = createVector(x, 0);
-        this.velocity.rotate((ballVisualiser.time / 20) * Math.PI);
-        //this.velocity.rotate(random(0, 2 * Math.PI));
-
-        let p = createVector(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
-        if(p.x > canvas.width || p.x < 0 || p.y > canvas.height || p.y < 0)
-        {
-            this.velocity.rotate(Math.PI);
-        }
-    }
 }

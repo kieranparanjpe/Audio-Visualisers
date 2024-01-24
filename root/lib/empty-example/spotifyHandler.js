@@ -5,7 +5,7 @@ class SpotifyHandler {
     static code = SpotifyHandler.params.get("code");
 
     //For development use:
-    //static redirect = 'http://localhost:63342/trippy%20art/lib/empty-example/index.html?_ijt=evkd7fmeo0gfs3crtgqt78i4e9&_ij_reload=RELOAD_ON_SAVE';
+    //static redirect = 'http://localhost:63342/audioSetup.js/root/index.html?_ijt=hu0bognfccgalepdhrh2vj06lh&_ij_reload=RELOAD_ON_SAVE';
     //For production use:
     static redirect = 'https://audio-visualisers-b0876.web.app/';
     static profile = null;

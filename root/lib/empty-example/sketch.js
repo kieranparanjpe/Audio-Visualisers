@@ -1,17 +1,18 @@
-
 let canvas;
 let frameQueue = new Queue();
 let scaleFactor = 1;
 let frameDelay = 0;
 let frame;
-let radialB;
+let RadialVisualiser;
+let horizontalVisualiser;
 let backgroundGraphic;
 let colorScheme = 0;
+let avgAmplitude = 0;
 
 function setup() {
   canvas = createCanvas(floor(screen.width * 0.6), floor(screen.height * 0.6));
   canvas.parent("CanvasParent");
-  //colorMode(HSB, 100);
+  colorMode(HSB, 100);
   canvas.background(color(0, 0 ,0));
   frame = createGraphics(canvas.width, canvas.height);
   frame.pixelDensity(1);
@@ -23,7 +24,8 @@ function setup() {
   SpotifyHandler.initialise();
   ballVisualiser.initialise();
   JuliaSetVisualiser.initialise(12);
-  radialB = new radialVisualiser(0, 0, 128);
+  RadialVisualiser = new radialVisualiser(0, 0, 128);
+  horizontalVisualiser = new HorizontalVisualiser(0, 0, 1024);
 
   document.addEventListener('fullscreenchange', () => {const isFullscreen = Boolean(document.fullscreenElement);
     if(!isFullscreen) {
@@ -40,45 +42,19 @@ function setup() {
 function draw() {
     background(0);
     frame.background(0);
-
     //StaticArt.drawMandelbrotSet();
-
-
     frame.image(backgroundGraphic, 0, 0);
-    //frame.background(30);
-   // frame.clear();
-    /*if(ColourManager.palette.length > 0)
-    {
-        for(let i = 0; i < ColourManager.palette.length; i++)
-        {
-            frame.noStroke();
-            frame.fill(ColourManager.palette[i]);
-            frame.rect(i * 50 + 50, 200, 50, 30);
-
-            for(let x = 0; x < 50; x++)
-            {
-                frame.fill(ColourManager.getColor((i + x / 50) / ColourManager.palette.length));
-               // frame.fill(0);
-                frame.rect(i * 50 + 50 + x, 250, 1, 30);
-            }
-        }
-    }*/
-    //image(frame, 0, 0);
-
-  /*  background(0);
-    frame.image(backgroundGraphic, 0, 0);
-    frame.background(30);*/
-    //frame.clear();
 
     //JuliaSetVisualiser.show(frame);
 
     if(analyser != null) {
         checkForNewSong();
-
-        //frame.image(ColourManager.img, 0, 0);
-        radialB.showF(frame);
+        RadialVisualiser.showF(frame);
+        //horizontalVisualiser.showF(frame);
         //ballVisualiser.show(frame);
     }
+
+    //Frame Delay Buffer for bluetooth speakers:
     if(frameDelay == 0){
         image(frame, 0, 0);
     }
@@ -90,7 +66,7 @@ function draw() {
             let fr = frameQueue.dequeue();
 
             if(fr == frame)
-                console.log("problem");
+                console.log("not changing frames");
 
             image(fr, 0, 0);
         }
@@ -164,8 +140,8 @@ let p = 0;
 
 function checkForNewSong()
 {
-    let avg = getAvgAmplitude();
-    let deltaAmp = avg - lastAvgAmplitude;
+    avgAmplitude = getAvgAmplitude();
+    let deltaAmp = avgAmplitude - lastAvgAmplitude;
 
 
     strokeWeight(5);
@@ -175,7 +151,7 @@ function checkForNewSong()
     {
         //console.log(avg + " - " + runningTroughAverage + " = " + Math.abs(avg - runningTroughAverage));
 
-        if(Math.abs(avg - lastPeak) > 27)
+        if(Math.abs(avgAmplitude - lastPeak) > 27)
         {
             strokeWeight(12);
             stroke(color(0, 100, 100, 100));
@@ -199,12 +175,12 @@ function checkForNewSong()
             runningTroughAverage += avg / 10;
         }*/
 
-        lastTrough = avg;
+        lastTrough = avgAmplitude;
     }
 
     if(lastDeltaAmp > 0 && deltaAmp < 0)
     {
-        if(Math.abs(avg - lastTrough) > 17)
+        if(Math.abs(avgAmplitude - lastTrough) > 17)
         {
             strokeWeight(12);
             stroke(color(0, 100, 100, 100));
@@ -214,7 +190,7 @@ function checkForNewSong()
             runningTroughAverage = 0;
         }
 
-        lastPeak = avg;
+        lastPeak = avgAmplitude;
     }
 
     //line(p, lastAvgAmplitude + 300, p + 1, avg + 300);
@@ -230,7 +206,7 @@ function checkForNewSong()
     }
 
     lastDeltaAmp = deltaAmp;
-    lastAvgAmplitude = avg;
+    lastAvgAmplitude = avgAmplitude;
 }
 
 function getAvgAmplitude()
@@ -241,12 +217,12 @@ function getAvgAmplitude()
 
     let avg = 0.0;
 
-    for(let i = 0; i < bufferLength; i++)
+    for(let i = 0; i < floor(bufferLength / 2); i++)
     {
         avg += dataArray[i];
     }
 
-    return avg / bufferLength;
+    return avg / (bufferLength/2);
 }
 
 
