@@ -14,7 +14,8 @@ class ColourManager
         let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
         // Replace virtual img object
         image.crossOrigin = 'Anonymous';
-        image.src = (url ? googleProxyURL + encodeURIComponent(url) : '');
+        image.src = url;
+           // (url ? googleProxyURL + encodeURIComponent(url) : '');
        // image = ColourManager.convertP5ImageToHTMLImage(ColourManager.img);
 
         if (image.complete) {

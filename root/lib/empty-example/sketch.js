@@ -87,7 +87,7 @@ function setColorScheme(scheme)
 
     colorScheme = scheme;
 
-    console.log(colorScheme);
+    console.log("selected scheme: " + colorScheme);
 
 }
 
